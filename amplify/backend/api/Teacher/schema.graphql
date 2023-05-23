@@ -1,0 +1,6 @@
+type Student @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  Name: String
+  LastName: String
+  MaternalName: String
+}
