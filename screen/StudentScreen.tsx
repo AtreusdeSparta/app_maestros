@@ -22,7 +22,7 @@ const initialState = {
 
 export const StudentScreen = () => {
   const [formState, setFormState] = useState(initialState);
-  const [students, setStudents] = useState<CreateStudentInput[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
 
   useEffect(() => {
     fetchStudents();
@@ -51,10 +51,12 @@ export const StudentScreen = () => {
     try {
       if (!formState.Name || !formState.LastName || !formState.MaternalName)
         return;
-      const student = {...formState};
-      setStudents([...students, student]);
+      const response: any = await API.graphql(
+        graphqlOperation(createStudent, {input: {...formState}}),
+      );
+      const student = response?.data?.createStudent as Student;
+      setStudents([...students, student as Student]);
       setFormState(initialState);
-      await API.graphql(graphqlOperation(createStudent, {input: student}));
     } catch (err) {
       console.error(err);
       console.log('error creating student:', err);
@@ -69,8 +71,10 @@ export const StudentScreen = () => {
       console.log('INSIDE REMOVE STUDENT', id);
       try {
         await API.graphql(
-          graphqlOperation(deleteStudent, {input: {id, _version: version}}),
+          graphqlOperation(deleteStudent, {input: {id, _version: version}}), // TODO: See the version when this is initially called.
         ); // Application Programable Interface
+        // trigger an update
+        await fetchStudents();
       } catch (err) {
         console.error(err);
         console.log('error removing student:', err);
@@ -110,7 +114,7 @@ export const StudentScreen = () => {
               <Button
                 icon="delete"
                 mode="contained"
-                onPress={removeStudent(student.id, student._version)}>
+                onPress={removeStudent(student.id, student._version || 1)}>
                 Delete
               </Button>
             </Text>
