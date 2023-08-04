@@ -8,10 +8,10 @@ import {
   StyleSheet,
 } from 'react-native';
 import {API, graphqlOperation} from 'aws-amplify';
-import {createStudent, deleteStudent} from '../src/graphql/mutations';
-import {listStudents} from '../src/graphql/queries';
-import {Student} from '../src/models';
-import {CreateStudentInput} from '../src/API';
+import {createStudent, deleteStudent} from '../../src/graphql/mutations';
+import {listStudents} from '../../src/graphql/queries';
+import {Student} from '../../src/models';
+import {CreateStudentInput} from '../../src/API';
 import {Button} from 'react-native-paper';
 
 const initialState = {
@@ -20,7 +20,7 @@ const initialState = {
   MaternalName: '',
 };
 
-export const StudentScreen = () => {
+export const AddStudentScreen = () => {
   const [formState, setFormState] = useState(initialState);
   const [students, setStudents] = useState<Student[]>([]);
 
